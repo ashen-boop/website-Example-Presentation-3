@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Viewer · Website Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .top-bar .brand {
+            color: #1e1e1e;
+            font-weight: 400;
+            font-size: 1.3rem;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .top-bar .brand i {
+            font-weight: 300;
+            color: #888;
+            font-size: 1.2rem;
+        }
+        .top-bar .brand .heading {
+            background: linear-gradient(135deg, #ff6b00, #ff1493, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 1.6rem;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .top-bar .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-bar .close {
+            color: #1e1e1e;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 8px 20px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 40px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            font-weight: 500;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            font-family: 'Inter', sans-serif;
+        }
+        .top-bar .close:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+            transform: translateY(-1px);
+        }
+        .top-bar .close:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== MAKE A QUOTE CTA BUTTON ===== */
+        .quote-cta {
+            color: #1e1e1e;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .quote-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #ff6b00, #ff1493, #2563eb);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 40px;
+            z-index: 0;
+        }
+        .quote-cta:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        }
+        .quote-cta:active {
+            transform: scale(0.96);
+        }
+        .quote-cta.clicked::before {
+            opacity: 1;
+        }
+        .quote-cta.clicked {
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
+            background: transparent;
+        }
+        .quote-cta i,
+        .quote-cta span {
+            position: relative;
+            z-index: 1;
+        }
+        .quote-cta.clicked i,
+        .quote-cta.clicked span {
+            color: white;
+        }
+
+        /* ===== BUTTON BAR ===== */
+        .button-bar {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            padding: 14px 24px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            border-radius: 60px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            max-width: 92%;
+            flex-wrap: nowrap;
+        }
+        .button-bar.show {
+            display: flex;
+        }
+
+        /* ===== THREE STYLE BUTTONS - TRANSLUCENT ===== */
+        .style-btn {
+            padding: 10px 28px;
+            border-radius: 50px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            color: #1e1e1e;
+        }
+        .style-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 50px;
+            z-index: 0;
+        }
+        .style-btn .dot,
+        .style-btn span {
+            position: relative;
+            z-index: 1;
+        }
+        .style-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        }
+        .style-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Minimalistic Button */
+        .style-btn.minimalistic {
+            color: #1e1e1e;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        .style-btn.minimalistic::before {
+            background: #1a1a1a;
+        }
+        .style-btn.minimalistic .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #888;
+            margin-right: 2px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .style-btn.minimalistic.active::before,
+        .style-btn.minimalistic.clicked::before {
+            opacity: 1;
+        }
+        .style-btn.minimalistic.active,
+        .style-btn.minimalistic.clicked {
+            color: #ffffff !important;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(26, 26, 26, 0.3);
+            background: transparent;
+        }
+        .style-btn.minimalistic.active .dot,
+        .style-btn.minimalistic.clicked .dot {
+            background: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Fancy Button */
+        .style-btn.fancy {
+            color: #8b3a0a;
+            border-color: rgba(230, 126, 34, 0.2);
+        }
+        .style-btn.fancy::before {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        .style-btn.fancy .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e67e22;
+            margin-right: 2px;
+            border: 2px solid rgba(230, 126, 34, 0.2);
+            transition: all 0.3s ease;
+        }
+        .style-btn.fancy.active::before,
+        .style-btn.fancy.clicked::before {
+            opacity: 1;
+        }
+        .style-btn.fancy.active,
+        .style-btn.fancy.clicked {
+            color: #ffffff !important;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(230, 126, 34, 0.3);
+            background: transparent;
+        }
+        .style-btn.fancy.active .dot,
+        .style-btn.fancy.clicked .dot {
+            background: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Blended Button */
+        .style-btn.blended {
+            color: #0d5c3a;
+            border-color: rgba(26, 138, 90, 0.2);
+        }
+        .style-btn.blended::before {
+            background: linear-gradient(135deg, #1a8a5a, #0d5c3a);
+        }
+        .style-btn.blended .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #1a8a5a;
+            margin-right: 2px;
+            border: 2px solid rgba(26, 138, 90, 0.2);
+            transition: all 0.3s ease;
+        }
+        .style-btn.blended.active::before,
+        .style-btn.blended.clicked::before {
+            opacity: 1;
+        }
+        .style-btn.blended.active,
+        .style-btn.blended.clicked {
+            color: #ffffff !important;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(26, 138, 90, 0.3);
+            background: transparent;
+        }
+        .style-btn.blended.active .dot,
+        .style-btn.blended.clicked .dot {
+            background: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .style-btn.active {
+            animation: none;
+        }
+
+        .btn-divider {
+            width: 2px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+            border-radius: 2px;
+        }
+
+        .current-style-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-right: 4px;
+        }
+
+        /* ===== IFRAME WRAPPER ===== */
+        .iframe-wrap {
+            position: fixed;
+            top: 100px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: calc(100vh - 100px);
+            background: #fafafa;
+        }
+        .iframe-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            -webkit-overflow-scrolling: touch;
+            overflow: auto;
+        }
+
+        /* ===== LOADING OVERLAY ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            transition: opacity 0.6s ease;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2.5px solid #f0f0f0;
+            border-top-color: #1e1e1e;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: rgba(0, 0, 0, 0.3);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .top-bar { height: 54px; padding: 10px 18px; }
+            .top-bar .brand .heading { font-size: 1.2rem; }
+            .top-bar .close { 
+                font-size: 0.75rem; 
+                padding: 6px 14px;
+                gap: 4px;
+            }
+            .quote-cta {
+                font-size: 0.75rem;
+                padding: 6px 14px;
+            }
+            .button-bar { 
+                top: 66px;
+                padding: 10px 16px;
+                gap: 8px;
+                border-radius: 40px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                justify-content: flex-start;
+            }
+            .button-bar::-webkit-scrollbar {
+                height: 0;
+            }
+            .style-btn {
+                padding: 8px 20px;
+                font-size: 0.7rem;
+                gap: 6px;
+                flex-shrink: 0;
+            }
+            .style-btn .dot {
+                width: 8px !important;
+                height: 8px !important;
+            }
+            .btn-divider { height: 24px; }
+            .current-style-label { font-size: 0.55rem; }
+            .iframe-wrap { top: 112px; height: calc(100vh - 112px); }
+        }
+
+        @media (max-width: 480px) {
+            .top-bar { height: 48px; padding: 8px 14px; }
+            .top-bar .brand .heading { font-size: 1rem; }
+            .top-bar .close { 
+                font-size: 0.65rem; 
+                padding: 5px 12px;
+                gap: 3px;
+            }
+            .quote-cta {
+                font-size: 0.65rem;
+                padding: 5px 12px;
+            }
+            .button-bar { 
+                top: 58px;
+                padding: 8px 12px;
+                gap: 6px;
+                border-radius: 30px;
+            }
+            .style-btn {
+                padding: 6px 14px;
+                font-size: 0.6rem;
+                gap: 4px;
+                border-width: 1.5px;
+            }
+            .style-btn .dot {
+                width: 6px !important;
+                height: 6px !important;
+            }
+            .btn-divider { height: 18px; }
+            .current-style-label { display: none; }
+            .iframe-wrap { top: 98px; height: calc(100vh - 98px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading your experience...</div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <a href="#" class="brand" onclick="window.location.href='/'">
+            <i class="fas fa-window-maximize"></i>
+            <span class="heading">The Artistic Unity</span>
+        </a>
+        <div class="right-actions">
+            <!-- 👇 PASTE YOUR QUOTE PAGE URL HERE -->
+            <button class="quote-cta" id="quoteCta" onclick="loadQuotePage()">
+                <i class="fas fa-quote-right"></i> <span>CONTACT</span>
+            </button>
+            <button class="close" onclick="window.close();">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+
+    <!-- BUTTON BAR - Three distinct colored buttons -->
+    <div class="button-bar" id="buttonBar">
+        <span class="current-style-label">Viewing</span>
+        
+        <!-- Minimalistic Button -->
+        <button class="style-btn minimalistic active" id="btnMinimalistic" onclick="goToStyle('minimalistic')">
+            <span class="dot"></span> <span>Revenue</span>
+        </button>
+        
+        <span class="btn-divider"></span>
+        
+        <!-- Fancy Button -->
+        <button class="style-btn fancy" id="btnFancy" onclick="goToStyle('fancy')">
+            <span class="dot"></span> <span>Backend</span>
+        </button>
+        
+        <span class="btn-divider"></span>
+        
+        <!-- Blended Button -->
+        <button class="style-btn blended" id="btnBlended" onclick="goToStyle('blended')">
+            <span class="dot"></span> <span>Booking</span>
+        </button>
+    </div>
+
+    <!-- IFRAME -->
+    <div class="iframe-wrap">
+        <iframe id="frame" src=""></iframe>
+    </div>
+
+    <script>
+        // ============================================
+        // YOUR THREE WEBSITE MOCKUPS - PASTE URLs HERE
+        // ============================================
+        const websites = {
+            'minimalistic': {
+                name: 'Revenue',
+                url: 'https://e-commerce-artistic-updated-1.vercel.app/'
+            },
+            'fancy': {
+                name: 'Backend',
+                url: 'https://inventory-management-2-gold.vercel.app/'
+            },
+            'blended': {
+                name: 'Booking',
+                url: 'https://reservation-app-2-seven.vercel.app/'
+            }
+        };
+
+        // ============================================
+        // QUOTE PAGE URL - PASTE YOUR URL HERE
+        // ============================================
+        const QUOTE_PAGE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScPeJxgI-U9FeBNyWZGld94XmHtKYxUe5JjHA4ALYgcCTmVWw/viewform?usp=header';
+
+        // ============================================
+        // GET URL PARAMETERS
+        // ============================================
+        function getParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+
+        // ============================================
+        // STATE
+        // ============================================
+        let currentStyle = 'minimalistic';
+        let isQuotePageLoaded = false;
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        const frame = document.getElementById('frame');
+        const btnMinimalistic = document.getElementById('btnMinimalistic');
+        const btnFancy = document.getElementById('btnFancy');
+        const btnBlended = document.getElementById('btnBlended');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const buttonBar = document.getElementById('buttonBar');
+        const quoteCta = document.getElementById('quoteCta');
+
+        // ============================================
+        // LOAD QUOTE PAGE IN IFRAME
+        // ============================================
+        function loadQuotePage() {
+            // Add click animation
+            quoteCta.classList.add('clicked');
+            setTimeout(() => {
+                quoteCta.classList.remove('clicked');
+            }, 1500);
+
+            // Remove active state from style buttons
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('clicked');
+            });
+
+            // Show loading
+            loadingOverlay.classList.remove('hidden');
+
+            // Load the quote page in the iframe
+            frame.src = QUOTE_PAGE_URL;
+            isQuotePageLoaded = true;
+
+            frame.onload = function() {
+                loadingOverlay.classList.add('hidden');
+            };
+
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 3000);
+
+            console.log('📝 Quote page loaded:', QUOTE_PAGE_URL);
+        }
+
+        // ============================================
+        // FUNCTIONS
+        // ============================================
+        function loadStyle(styleKey) {
+            const website = websites[styleKey];
+            if (!website) {
+                console.error('Website not found:', styleKey);
+                return;
+            }
+
+            currentStyle = styleKey;
+            isQuotePageLoaded = false;
+
+            loadingOverlay.classList.remove('hidden');
+
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('clicked');
+            });
+
+            const activeBtn = document.querySelector(`.style-btn.${styleKey}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.add('clicked');
+                setTimeout(() => {
+                    activeBtn.classList.remove('clicked');
+                }, 1500);
+            }
+
+            frame.src = website.url;
+            frame.onload = function() {
+                loadingOverlay.classList.add('hidden');
+            };
+
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 2000);
+        }
+
+        function goToStyle(styleKey) {
+            if (styleKey !== currentStyle || isQuotePageLoaded) {
+                loadStyle(styleKey);
+            } else {
+                const btn = document.querySelector(`.style-btn.${styleKey}`);
+                if (btn) {
+                    btn.classList.add('clicked');
+                    setTimeout(() => {
+                        btn.classList.remove('clicked');
+                    }, 1500);
+                }
+            }
+        }
+
+        // ============================================
+        // LOAD ON START
+        // ============================================
+        function loadContent() {
+            const style = getParam('style') || 'minimalistic';
+
+            buttonBar.classList.add('show');
+
+            if (websites[style]) {
+                loadStyle(style);
+            } else {
+                loadStyle('minimalistic');
+            }
+
+            console.log('✨ Website Viewer loaded!');
+            console.log('📱 Current style:', style);
+            console.log('🎨 Click Minimalistic, Fancy, or Blended to switch');
+            console.log('📝 Click "Share Your Vision" to load your quote page');
+        }
+
+        // ============================================
+        // SETUP EVENT LISTENERS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadContent();
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '1') goToStyle('minimalistic');
+                else if (e.key === '2') goToStyle('fancy');
+                else if (e.key === '3') goToStyle('blended');
+            });
+
+            console.log('⌨️  Keyboard shortcuts: 1=Minimalistic, 2=Fancy, 3=Blended');
+        });
+    </script>
+
+</body>
+</html>
